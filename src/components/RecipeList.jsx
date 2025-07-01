@@ -1,14 +1,17 @@
+import React from 'react'
 import RecipeCard from './RecipeCard'
 
-export default function RecipeList({ receitas, aoClicar }) {
-  if (receitas.length === 0) {
-    return <p style={{ padding: '1rem' }}>Nenhuma receita encontrada 😢</p>
-  }
-
+export default function RecipeList({ receitas, favoritos, aoFavoritar, aoClicar }) {
   return (
-    <div style={{ padding: '1rem' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
       {receitas.map((r) => (
-        <RecipeCard key={r.id} receita={r} aoClicar={aoClicar} />
+        <RecipeCard
+          key={r.id}
+          receita={r}
+          aoFavoritar={aoFavoritar}
+          aoClicar={aoClicar}
+          isFavorita={favoritos.includes(r.id)}
+        />
       ))}
     </div>
   )
