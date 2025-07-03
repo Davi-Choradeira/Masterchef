@@ -1,6 +1,8 @@
 import React from 'react'
 
 export default function RecipeModal({ receita, aoFechar }) {
+  if (!receita) return null // 👈 evita renderizar caso receita seja null
+
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
@@ -24,7 +26,6 @@ export default function RecipeModal({ receita, aoFechar }) {
     </div>
   )
 }
-
 const styles = {
   overlay: {
     position: 'fixed',
