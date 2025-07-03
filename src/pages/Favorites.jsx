@@ -13,27 +13,63 @@ export default function Favorites() {
   }, [])
 
   useEffect(() => {
-    const filtradas = receitasMock.filter((r) => favoritos.includes(r.id))
-    setReceitasFavoritas(filtradas)
+    setReceitasFavoritas(favoritos)
   }, [favoritos])
 
   const toggleFavorito = (id) => {
-    const atualizados = favoritos.includes(id)
-      ? favoritos.filter((fid) => fid !== id)
-      : [...favoritos, id]
+    const receita = receitasMock.find((r) => r.id === id)
+
+    const jaFavoritado = favoritos.some((f) => f.id === id)
+
+    const atualizados = jaFavoritado
+      ? favoritos.filter((f) => f.id !== id)
+      : [...favoritos, receita]
+
     setFavoritos(atualizados)
     localStorage.setItem('favoritos', JSON.stringify(atualizados))
+  }
+
+  const removerTodos = () => {
+    setFavoritos([])
+    setReceitasFavoritas([])
+    localStorage.setItem('favoritos', JSON.stringify([]))
   }
 
   return (
     <div>
       <Header />
-      <h2 style={{ marginTop: '1rem' }}>Minhas Receitas Favoritas 💖</h2>
+      <h2 style={{ margin: '1rem' }}>Minhas Receitas Favoritas 💖</h2>
+
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '0 1rem',
+        flexWrap: 'wrap'
+      }}>
+        <span><strong>{receitasFavoritas.length}</strong> favoritos</span>
+        {receitasFavoritas.length > 0 && (
+          <button
+            onClick={removerTodos}
+            style={{
+              background: '#f44336',
+              color: '#fff',
+              border: 'none',
+              padding: '0.5rem 1rem',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              marginTop: '0.5rem'
+            }}
+          >
+            Remover todos 💥
+          </button>
+        )}
+      </div>
 
       {receitasFavoritas.length > 0 ? (
         <RecipeList
           receitas={receitasFavoritas}
-          favoritos={favoritos}
+          favoritos={favoritos.map((f) => f.id)}
           aoFavoritar={toggleFavorito}
           aoClicar={() => {}}
         />
