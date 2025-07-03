@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
 import Filters from '../components/Filters'
-import RecipeList from '../components/RecipeList'
+import RecipeCarousel from '../components/RecipeCarousel'
 import RecipeModal from '../components/RecipeModal'
 import { receitasMock } from '../data/receitas'
 
@@ -30,22 +30,9 @@ export default function Home() {
     setReceitas(resultado)
   }
 
-  const toggleFavorito = (id) => {
-    setFavoritos((favoritosAnteriores) =>
-      favoritosAnteriores.includes(id)
-        ? favoritosAnteriores.filter((fid) => fid !== id)
-        : [...favoritosAnteriores, id]
-    )
-  }
-
   const abrirModal = (receita) => {
     setReceitaSelecionada(receita)
     setModalAberto(true)
-  }
-
-  const fecharModal = () => {
-    setReceitaSelecionada(null)
-    setModalAberto(false)
   }
 
   return (
@@ -53,14 +40,9 @@ export default function Home() {
       <Header />
       <SearchBar aoBuscar={buscarPorIngrediente} />
       <Filters />
-      <RecipeList
-        receitas={receitas}
-        favoritos={favoritos}
-        aoFavoritar={toggleFavorito}
-        aoClicar={abrirModal}
-      />
-      {modalAberto && (
-        <RecipeModal receita={receitaSelecionada} aoFechar={fecharModal} />
+      <RecipeCarousel receitas={receitas} aoClicar={abrirModal} />
+      {modalAberto && receitaSelecionada && (
+        <RecipeModal receita={receitaSelecionada} aoFechar={() => setModalAberto(false)} />
       )}
     </div>
   )
