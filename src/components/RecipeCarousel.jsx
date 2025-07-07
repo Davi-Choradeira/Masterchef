@@ -1,89 +1,61 @@
-import React, { useState } from 'react'
+import React from 'react'
+import RecipeCard from './RecipeCard'
 
-export default function RecipeCarousel({ receitas }) {
-  const [indiceAtual, setIndiceAtual] = useState(0)
-
-  const receita = receitas[indiceAtual]
-
-  const irParaAnterior = () => {
-    setIndiceAtual((prev) =>
-      prev === 0 ? receitas.length - 1 : prev - 1
-    )
-  }
-
-  const irParaProxima = () => {
-    setIndiceAtual((prev) =>
-      prev === receitas.length - 1 ? 0 : prev + 1
-    )
+export default function RecipeCarousel({ receitas, aoClicar, aoFavoritar, favoritos }) {
+  if (!receitas || receitas.length === 0) {
+    return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Nenhuma receita disponível 🍽️</p>
   }
 
   return (
     <div style={styles.container}>
-      <button onClick={irParaAnterior} style={styles.seta}>❮</button>
-
-      <div style={styles.cardWrapper}>
-        <div key={receita.id} style={styles.card}>
-          <img src={receita.imagem} alt={receita.titulo} style={styles.imagem} />
-          <h2 style={styles.titulo}>{receita.titulo}</h2>
-          <p><strong>Tempo:</strong> {receita.tempo}</p>
-          <p><strong>Ingredientes:</strong> {receita.ingredientes.join(', ')}</p>
-        </div>
+      <div style={styles.scrollArea}>
+        {receitas.map((receita, index) => (
+          <div key={receita.id} style={cardStyle(index, receitas.length)}>
+            <RecipeCard
+              receita={receita}
+              aoClicar={aoClicar}
+              aoFavoritar={aoFavoritar}
+              isFavorita={favoritos.includes(receita.id)}
+            />
+          </div>
+        ))}
       </div>
-
-      <button onClick={irParaProxima} style={styles.seta}>❯</button>
     </div>
   )
 }
 
 const styles = {
   container: {
+    perspective: '1500px',
+    overflowX: 'auto',
+    padding: '1.5rem 0',
+    scrollbarWidth: 'none',
+    msOverflowStyle: 'none',
+    WebkitOverflowScrolling: 'touch'
+  },
+  scrollArea: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '1rem',
-    padding: '2rem',
-    position: 'relative',
-    flexWrap: 'wrap'
-  },
-  seta: {
-    background: 'rgba(255,255,255,0.5)',
-    border: 'none',
-    borderRadius: '50%',
-    fontSize: '2.5rem',
-    padding: '0.5rem 1rem',
-    cursor: 'pointer',
-    color: '#f44336',
-    transition: 'background 0.3s ease',
-    boxShadow: '0 0 10px rgba(0,0,0,0.2)',
-    userSelect: 'none'
-  },
-  cardWrapper: {
-    width: '360px',
-    maxWidth: '90vw',
-    overflow: 'hidden',
-    transition: 'transform 0.4s ease-in-out',
-    transform: 'scale(1)',
-    backgroundColor: 'transparent'
-  },
-  card: {
-    border: '2px solid #f44336',
-    borderRadius: '12px',
-    padding: '1rem',
-    textAlign: 'center',
-    backgroundColor: '#fff',
-    boxShadow: '0 8px 20px rgba(0,0,0,0.1)',
-    transition: 'opacity 0.3s ease-in-out'
-  },
-  imagem: {
-    width: '100%',
-    height: '200px',
-    objectFit: 'cover',
-    borderRadius: '8px',
-    marginBottom: '0.5rem'
-  },
-  titulo: {
-    margin: '0.5rem 0',
-    fontSize: '1.4rem',
-    color: '#333'
+    gap: '2.5rem',
+    padding: '0 2rem',
+    scrollSnapType: 'x mandatory',
+    overflowX: 'scroll'
+  }
+}
+
+const cardStyle = (index, total) => {
+  const center = Math.floor(total / 2)
+  const distanceFromCenter = Math.abs(index - center)
+  const scale = 1 - distanceFromCenter * 0.06
+  const rotateY = (index - center) * 5
+
+  return {
+    scrollSnapAlign: 'center',
+    transform: `rotateY(${rotateY}deg) scale(${scale})`,
+    transition: 'transform 0.6s ease, filter 0.4s ease',
+    minWidth: '260px',
+    flexShrink: 0,
+    filter: distanceFromCenter === 0
+      ? 'drop-shadow(0 6px 18px rgba(0,0,0,0.25))'
+      : 'drop-shadow(0 2px 6px rgba(0,0,0,0.1))'
   }
 }

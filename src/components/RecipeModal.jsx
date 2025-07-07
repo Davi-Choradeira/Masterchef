@@ -1,64 +1,62 @@
 import React from 'react'
 
 export default function RecipeModal({ receita, aoFechar }) {
-  if (!receita) return null // 👈 evita renderizar caso receita seja null
-
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <img
-          src={receita.imagem || 'https://via.placeholder.com/600x300?text=Receita'}
-          alt={receita.titulo}
-          style={styles.imagem}
-        />
-        <h2>{receita.titulo}</h2>
+    <div style={styles.overlay} onClick={aoFechar}>
+      <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <button style={styles.closeButton} onClick={aoFechar}>✖</button>
+        <img src={receita.imagem} alt={receita.nome} style={styles.image} />
+        <h2>{receita.nome}</h2>
         <p><strong>Tempo de preparo:</strong> {receita.tempo}</p>
-        <h4>Ingredientes:</h4>
+        <p><strong>Ingredientes:</strong></p>
         <ul>
-          {receita.ingredientes.map((i, idx) => (
-            <li key={idx}>{i}</li>
+          {receita.ingredientes.map((ing, index) => (
+            <li key={index}>{ing}</li>
           ))}
         </ul>
-        <h4>Modo de preparo:</h4>
-        <p>{receita.instrucoes}</p>
-        <button style={styles.fechar} onClick={aoFechar}>Fechar</button>
+        <p><strong>Modo de preparo:</strong></p>
+        <p>{receita.preparo}</p>
       </div>
     </div>
   )
 }
+
 const styles = {
   overlay: {
     position: 'fixed',
-    top: 0, left: 0,
-    width: '100%', height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 999
+    alignItems: 'center',
+    zIndex: 999,
   },
   modal: {
     backgroundColor: '#fff',
     padding: '2rem',
-    borderRadius: '8px',
+    borderRadius: '10px',
     width: '90%',
-    maxWidth: '600px',
-    boxShadow: '0 0 10px rgba(0,0,0,0.2)'
+    maxWidth: '500px',
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    position: 'relative',
   },
- imagem: {
-  width: '100%',
-  maxHeight: '250px',
-  objectFit: 'cover',
-  borderRadius: '8px',
-  marginBottom: '1rem'
-},
-  fechar: {
-    marginTop: '1rem',
-    padding: '0.5rem 1rem',
-    backgroundColor: '#f44336',
-    color: '#fff',
+  closeButton: {
+    position: 'absolute',
+    top: '1rem',
+    right: '1rem',
     border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer'
-  }
+    background: 'none',
+    fontSize: '1.5rem',
+    cursor: 'pointer',
+  },
+  image: {
+    width: '100%',
+    height: '200px',
+    objectFit: 'cover',
+    borderRadius: '8px',
+  },
 }
