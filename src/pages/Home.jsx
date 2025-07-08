@@ -53,24 +53,30 @@ export default function Home() {
   }
 
   return (
-    <div style={{ paddingBottom: '2rem' }}>
+    <div
+  style={{
+    width: '100vw',
+    height: '100vh',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+  }}
+>
+  
       <Header />
-      <SearchBar aoBuscar={buscarPorIngrediente} />
-      <Filters />
-
-      {receitas.length > 0 ? (
+      <div style={{ padding: '1rem 2rem' }}>
+        <SearchBar aoBuscar={buscarPorIngrediente} />
+        <Filters />
+      </div>
+      <div style={{ flex: 1, overflow: 'hidden' }}>
         <Carousel3D
           receitas={receitas}
           aoClicar={abrirModal}
           aoFavoritar={toggleFavorito}
           favoritos={favoritos}
         />
-      ) : (
-        <p style={{ textAlign: 'center', marginTop: '2rem' }}>
-          Nenhuma receita encontrada 🍽️
-        </p>
-      )}
-
+      </div>
       {modalAberto && receitaSelecionada && (
         <RecipeModal
           receita={receitaSelecionada}
