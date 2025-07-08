@@ -5,14 +5,12 @@ export default function RecipeCard({ receita, aoClicar, aoFavoritar, isFavorita 
 
   return (
     <div style={styles.card} onClick={() => aoClicar(receita)}>
-      <img
-        src={receita?.imagem || 'https://via.placeholder.com/300x200?text=Receita'}
-        alt={receita?.titulo || 'Receita'}
-        style={styles.imagem}
-      />
+      <div style={styles.thumb}>
+        <span style={styles.nome}>{receita?.titulo || 'Sem título'}</span>
+      </div>
 
       <div style={styles.header}>
-        <h3 style={styles.titulo}>{receita?.titulo || 'Sem título'}</h3>
+        <span style={styles.titulo}>{receita?.titulo || 'Sem título'}</span>
         <span
           onClick={(e) => {
             e.stopPropagation()
@@ -21,7 +19,7 @@ export default function RecipeCard({ receita, aoClicar, aoFavoritar, isFavorita 
           style={{
             cursor: 'pointer',
             fontSize: '1.5rem',
-            color: isFavorita ? '#e91e63' : '#ccc',
+            color: isFavorita ? '#ff4da6' : '#888',
             transition: 'color 0.3s ease'
           }}
           title={isFavorita ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
@@ -30,40 +28,63 @@ export default function RecipeCard({ receita, aoClicar, aoFavoritar, isFavorita 
         </span>
       </div>
 
-      <p style={{ marginTop: '0.5rem', color: '#555' }}>
-        <strong>Tempo:</strong> {receita?.tempo || '---'}
-      </p>
+      <p style={styles.tempo}>⏱️ {receita?.tempo || 'Tempo desconhecido'}</p>
     </div>
   )
 }
 
 const styles = {
   card: {
-    border: '1px solid #ddd',
-    borderRadius: '8px',
+    backgroundColor: '#111',
+    borderRadius: '12px',
+    border: '1px solid #444',
+    boxShadow: '0 0 10px rgba(0,255,255,0.2)',
     padding: '1rem',
-    marginBottom: '1rem',
-    maxWidth: '320px',
-    backgroundColor: '#fff',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-    transition: 'transform 0.3s ease',
-    cursor: 'pointer'
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    cursor: 'pointer',
+    maxWidth: '320px', // aumentei para dar um pouco mais de espaço
+    flex: '1 1 320px',
+    color: '#f0f0f0',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    backdropFilter: 'blur(4px)'
   },
-  imagem: {
+  thumb: {
     width: '100%',
     height: '180px',
-    objectFit: 'cover',
-    borderRadius: '6px',
-    marginBottom: '0.5rem'
+    backgroundColor: '#222',
+    border: '2px dashed #555',
+    borderRadius: '8px',
+    marginBottom: '0.75rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  nome: {
+    color: '#0ff',
+    fontSize: '1.1rem',
+    textAlign: 'center',
+    padding: '0 0.5rem'
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: '0.5rem'
   },
   titulo: {
-    margin: 0,
-    fontSize: '1.1rem',
-    color: '#333'
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    color: '#00ffff',
+    flex: 1,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
+  },
+  tempo: {
+    marginTop: 'auto',
+    fontSize: '0.9rem',
+    color: '#ccc'
   }
 }
