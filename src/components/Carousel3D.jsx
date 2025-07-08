@@ -1,14 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import RecipeCard from './RecipeCard'
 
 export default function RecipeCarousel3D({ receitas, aoClicar, aoFavoritar, favoritos }) {
   const [angulo, setAngulo] = useState(0)
   const total = receitas.length
-  const anguloPorCard = 360 / total
 
-  const girar = (direcao) => {
-    setAngulo((prev) => prev + (direcao === 'esquerda' ? anguloPorCard : -anguloPorCard))
-  }
+  const anguloPorCard = useMemo(() => 360 / total, [total])
+
+  const rotate = useCallback(
+    (direction) => {
+      setAngulo((prev) => {
+        let novoAngulo = prev + (direction === 'left' ? anguloPorCard : -anguloPorCard)
+        if (novoAngulo >= 360) novoAngulo -= 360
+        if (novoAngulo < 0) novoAngulo += 360
+        return novoAngulo
+      })
+    },
+    [anguloPorCard]
+  )
 
   return (
     <div style={styles.wrapper}>
@@ -16,7 +25,7 @@ export default function RecipeCarousel3D({ receitas, aoClicar, aoFavoritar, favo
         <div
           style={{
             ...styles.circulo,
-            transform: `translateZ(-430px) rotateY(${angulo}deg)`
+            transform: `translateZ(-550px) rotateY(${angulo}deg)` // aqui o translateZ negativo maior
           }}
         >
           {receitas.map((receita, i) => {
@@ -26,7 +35,7 @@ export default function RecipeCarousel3D({ receitas, aoClicar, aoFavoritar, favo
                 key={receita.id}
                 style={{
                   ...styles.card,
-                  transform: `rotateY(${rotY}deg) translateZ(430px)`
+                  transform: `rotateY(${rotY}deg) translateZ(550px)` // distância maior para espaçar cards
                 }}
               >
                 <RecipeCard
@@ -42,8 +51,22 @@ export default function RecipeCarousel3D({ receitas, aoClicar, aoFavoritar, favo
       </div>
 
       <div style={styles.controles}>
-        <button style={styles.btn} onClick={() => girar('esquerda')}>⬅️</button>
-        <button style={styles.btn} onClick={() => girar('direita')}>➡️</button>
+        <button
+          style={styles.btn}
+          onClick={() => rotate('left')}
+          aria-label="Girar para esquerda"
+          type="button"
+        >
+          ⬅️
+        </button>
+        <button
+          style={styles.btn}
+          onClick={() => rotate('right')}
+          aria-label="Girar para direita"
+          type="button"
+        >
+          ➡️
+        </button>
       </div>
     </div>
   )
@@ -85,14 +108,15 @@ const styles = {
     gap: '1rem'
   },
   btn: {
-    fontSize: '1.5rem',
-    padding: '0.5rem 1rem',
+    fontSize: '1.6rem',
+    padding: '0.6rem 1.2rem',
     borderRadius: '6px',
     backgroundColor: '#f06060',
     color: '#fff',
     border: 'none',
     cursor: 'pointer',
     boxShadow: '0 2px 5px rgba(0,0,0,0.3)',
-    transition: 'background 0.3s ease'
+    transition: 'background-color 0.3s ease',
+    userSelect: 'none'
   }
 }
