@@ -2,15 +2,25 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
   font-family: 'Arial', sans-serif;
   background-color: #fff;
   color: #333;
-  overflow-x: hidden;
+  overflow: hidden; /* trava rolagem total */
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 img {
   display: block;
   max-width: 100%;
+  height: auto;
 }
