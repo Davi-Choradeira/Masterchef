@@ -1,90 +1,89 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function RecipeCard({ receita, aoClicar, aoFavoritar, isFavorita }) {
-  if (!receita) return null
+  const [hover, setHover] = useState(false)
 
   return (
-    <div style={styles.card} onClick={() => aoClicar(receita)}>
-      <div style={styles.thumb}>
-        <span style={styles.nome}>{receita?.titulo || 'Sem título'}</span>
-      </div>
-
-      <div style={styles.header}>
-        <span style={styles.titulo}>{receita?.titulo || 'Sem título'}</span>
-        <span
-          onClick={(e) => {
-            e.stopPropagation()
-            aoFavoritar?.(receita.id)
-          }}
-          style={{
-            cursor: 'pointer',
-            fontSize: '1.5rem',
-            color: isFavorita ? '#ff4da6' : '#888',
-            transition: 'color 0.3s ease'
-          }}
-          title={isFavorita ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-        >
-          {isFavorita ? '💖' : '🤍'}
-        </span>
-      </div>
-
-      <p style={styles.tempo}>⏱️ {receita?.tempo || 'Tempo desconhecido'}</p>
+    <div
+      style={{
+        ...styles.card,
+        transform: hover ? 'translateY(-5px)' : 'translateY(0)',
+        boxShadow: hover
+          ? '0 0 14px rgba(0, 150, 255, 0.2)'
+          : '0 1px 6px rgba(0,0,0,0.1)'
+      }}
+      onClick={() => aoClicar(receita)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <img
+        src={receita.imagem || '/imagens/default.jpg'}
+        alt={receita.titulo}
+        style={styles.imagem}
+      />
+      <h3 style={styles.titulo}>{receita.titulo}</h3>
+      <p style={styles.tempo}>⏱️ {receita.tempo}</p>
+      <ul style={styles.lista}>
+        {receita.ingredientes.map((ing, idx) => (
+          <li key={idx}>{ing}</li>
+        ))}
+      </ul>
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          aoFavoritar(receita.id)
+        }}
+        style={{
+          ...styles.botaoFavorito,
+          backgroundColor: isFavorita ? '#ff4081' : '#e0e0e0',
+          color: isFavorita ? '#fff' : '#333'
+        }}
+      >
+        {isFavorita ? 'Remover dos favoritos' : 'Favoritar'}
+      </button>
     </div>
   )
 }
 
 const styles = {
   card: {
-    backgroundColor: '#111',
-    borderRadius: '12px',
-    border: '1px solid #444',
-    boxShadow: '0 0 10px rgba(0,255,255,0.2)',
-    padding: '1rem',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    cursor: 'pointer',
-    maxWidth: '320px', // aumentei para dar um pouco mais de espaço
-    flex: '1 1 320px',
-    color: '#f0f0f0',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    backdropFilter: 'blur(4px)'
-  },
-  thumb: {
-    width: '100%',
-    height: '180px',
-    backgroundColor: '#222',
-    border: '2px dashed #555',
+    backgroundColor: '#fff',
     borderRadius: '8px',
-    marginBottom: '0.75rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  nome: {
-    color: '#0ff',
-    fontSize: '1.1rem',
+    padding: '1rem',
+    cursor: 'pointer',
     textAlign: 'center',
-    padding: '0 0.5rem'
+    transition: 'all 0.3s ease',
+    height: '100%'
   },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  imagem: {
+    width: '100%',
+    height: '140px',
+    objectFit: 'cover',
+    borderRadius: '6px',
     marginBottom: '0.5rem'
   },
   titulo: {
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    color: '#00ffff',
-    flex: 1,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
+    fontSize: '1.2rem',
+    fontWeight: '600',
+    margin: '0.5rem 0 0.2rem'
   },
   tempo: {
-    marginTop: 'auto',
+    fontSize: '0.95rem',
+    color: '#666',
+    marginBottom: '0.5rem'
+  },
+  lista: {
+    listStyle: 'none',
+    padding: 0,
+    marginBottom: '0.5rem',
+    fontSize: '0.85rem',
+    color: '#444'
+  },
+  botaoFavorito: {
+    border: 'none',
+    padding: '0.4rem 0.8rem',
+    borderRadius: '6px',
     fontSize: '0.9rem',
-    color: '#ccc'
+    cursor: 'pointer'
   }
 }
