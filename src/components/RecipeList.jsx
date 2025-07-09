@@ -1,7 +1,11 @@
 import React from 'react'
 import RecipeCard from './RecipeCard'
 
-export default function RecipeList({ receitas, favoritos, aoFavoritar, aoClicar }) {
+export default function RecipeList({ receitas = [], favoritos = [], aoFavoritar, aoClicar }) {
+  if (!Array.isArray(receitas) || receitas.length === 0) {
+    return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Nenhuma receita disponível no momento.</p>
+  }
+
   return (
     <div style={styles.container}>
       {receitas.map((r) => (
@@ -22,11 +26,10 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
     gap: '1.5rem',
-    padding: '2rem',
-    backgroundColor: '#121212',     // fundo escuro estiloso
-    borderRadius: '12px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    justifyContent: 'center'
+    marginTop: '2rem',
+    paddingBottom: '2rem',
+    width: '100%',
+    maxWidth: '1400px',
+    marginInline: 'auto'
   }
 }
