@@ -1,83 +1,74 @@
-import React, { useEffect, useState } from 'react'
-import Header from '../components/Header'
-import RecipeList from '../components/RecipeList'
+import React from 'react'
 import { receitasMock } from '../data/receitas'
+import RecipeList from '../components/RecipeList'
 
-export default function Favorites() {
-  const [favoritos, setFavoritos] = useState([])
-  const [receitasFavoritas, setReceitasFavoritas] = useState([])
-
-  useEffect(() => {
-    const salvos = JSON.parse(localStorage.getItem('favoritos')) || []
-    setFavoritos(salvos)
-  }, [])
-
-  useEffect(() => {
-    setReceitasFavoritas(favoritos)
-  }, [favoritos])
-
-  const toggleFavorito = (id) => {
-    const receita = receitasMock.find((r) => r.id === id)
-
-    const jaFavoritado = favoritos.some((f) => f.id === id)
-
-    const atualizados = jaFavoritado
-      ? favoritos.filter((f) => f.id !== id)
-      : [...favoritos, receita]
-
-    setFavoritos(atualizados)
-    localStorage.setItem('favoritos', JSON.stringify(atualizados))
-  }
-
-  const removerTodos = () => {
-    setFavoritos([])
-    setReceitasFavoritas([])
-    localStorage.setItem('favoritos', JSON.stringify([]))
-  }
+export default function Favorites({ favoritos = [], aoFavoritar, aoClicar }) {
+  const favoritas = receitasMock.filter((r) => favoritos.includes(r.id))
 
   return (
-    <div>
-      <Header />
-      <h2 style={{ margin: '1rem' }}>Minhas Receitas Favoritas 💖</h2>
+    <div style={styles.container}>
+      <h2 style={styles.titulo}>❤️ Minhas Receitas Favoritas</h2>
+      <p style={styles.contagem}>
+        {favoritas.length === 0
+          ? 'Você ainda não favoritou nenhuma receita.'
+          : `${favoritas.length} favoritas`}
+      </p>
 
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0 1rem',
-        flexWrap: 'wrap'
-      }}>
-        <span><strong>{receitasFavoritas.length}</strong> favoritos</span>
-        {receitasFavoritas.length > 0 && (
-          <button
-            onClick={removerTodos}
-            style={{
-              background: '#f44336',
-              color: '#fff',
-              border: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              marginTop: '0.5rem'
-            }}
-          >
-            Remover todos 💥
-          </button>
-        )}
-      </div>
-
-      {receitasFavoritas.length > 0 ? (
+      {favoritas.length > 0 ? (
         <RecipeList
-          receitas={receitasFavoritas}
-          favoritos={favoritos.map((f) => f.id)}
-          aoFavoritar={toggleFavorito}
-          aoClicar={() => {}}
+          receitas={favoritas}
+          favoritos={favoritos}
+          aoFavoritar={aoFavoritar}
+          aoClicar={aoClicar}
         />
       ) : (
-        <p style={{ padding: '1rem', fontStyle: 'italic' }}>
-          Você ainda não favoritou nenhuma receita.
-        </p>
+        <div style={styles.vazio}>
+          <img
+            src="/imagens/favoritos-vazio.png"
+            alt="Sem favoritos"
+            style={styles.imagem}
+          />
+          <p style={styles.textoVazio}>
+            Você ainda não adicionou nenhuma receita aos favoritos.
+          </p>
+        </div>
       )}
     </div>
   )
+}
+
+const styles = {
+  container: {
+    width: '100%',
+    maxWidth: '1400px',
+    padding: '2rem',
+    margin: '0 auto',
+    textAlign: 'center'
+  },
+  titulo: {
+    fontSize: '2rem',
+    marginBottom: '0.5rem'
+  },
+  contagem: {
+    fontSize: '1rem',
+    marginBottom: '1rem',
+    color: '#666'
+  },
+  vazio: {
+    marginTop: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  imagem: {
+    width: '160px',
+    height: '160px',
+    objectFit: 'contain',
+    opacity: 0.5,
+    marginBottom: '1rem'
+  },
+  textoVazio: {
+    fontSize: '1rem',
+    color: '#777'
+  }
 }
