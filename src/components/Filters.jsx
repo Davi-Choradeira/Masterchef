@@ -23,15 +23,17 @@ const styles = {
     display: 'flex',
     gap: '0.5rem',
     flexWrap: 'wrap',
-    padding: '1rem'
+    padding: '1rem',
+    justifyContent: 'center'
   },
   botao: {
-    background: '#f44336',
+    backgroundColor: '#20232a',
     color: '#fff',
-    border: 'none',
+    border: '1px solid #333',
     padding: '0.5rem 1rem',
-    borderRadius: '5px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: 'bold'
+    fontWeight: '500',
+    transition: 'background 0.3s, transform 0.2s'
   }
 }
