@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
 import Filters from '../components/Filters'
-import RecipeModal from '../components/RecipeModal'
-import Carousel3D from '../components/Carousel3D'
+import RecipeList from '../components/RecipeList'
 import { receitasMock } from '../data/receitas'
 
 export default function Home() {
-  const [receitas, setReceitas] = useState([])
+  const [receitas, setReceitas] = useState(receitasMock)
   const [favoritos, setFavoritos] = useState([])
-  const [modalAberto, setModalAberto] = useState(false)
-  const [receitaSelecionada, setReceitaSelecionada] = useState(null)
-
-  useEffect(() => {
-    setReceitas(receitasMock || [])
-  }, [])
 
   useEffect(() => {
     const salvos = JSON.parse(localStorage.getItem('favoritos')) || []
@@ -30,7 +22,6 @@ export default function Home() {
       setReceitas(receitasMock)
       return
     }
-
     const resultado = receitasMock.filter((r) =>
       r.ingredientes.some((i) =>
         i.toLowerCase().includes(ingrediente.toLowerCase())
@@ -39,9 +30,11 @@ export default function Home() {
     setReceitas(resultado)
   }
 
-  const abrirModal = (receita) => {
-    setReceitaSelecionada(receita)
-    setModalAberto(true)
+  const filtrarPorCategoria = (categoria) => {
+    const resultado = receitasMock.filter((r) =>
+      r.tags && r.tags.includes(categoria)
+    )
+    setReceitas(resultado)
   }
 
   const toggleFavorito = (id) => {
@@ -52,37 +45,32 @@ export default function Home() {
     )
   }
 
+  const abrirReceita = (receita) => {
+    console.log('Receita selecionada:', receita.titulo)
+  }
+
   return (
-    <div
-  style={{
+    <div style={styles.container}>
+      <SearchBar aoBuscar={buscarPorIngrediente} />
+      <Filters aoFiltrar={filtrarPorCategoria} />
+      <RecipeList
+        receitas={receitas}
+        favoritos={favoritos}
+        aoFavoritar={toggleFavorito}
+        aoClicar={abrirReceita}
+      />
+    </div>
+  )
+}
+
+const styles = {
+  container: {
     width: '100vw',
     height: '100vh',
     overflow: 'hidden',
+    padding: '1rem 2rem',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start'
-  }}
->
-  
-      <Header />
-      <div style={{ padding: '1rem 2rem' }}>
-        <SearchBar aoBuscar={buscarPorIngrediente} />
-        <Filters />
-      </div>
-      <div style={{ flex: 1, overflow: 'hidden' }}>
-        <Carousel3D
-          receitas={receitas}
-          aoClicar={abrirModal}
-          aoFavoritar={toggleFavorito}
-          favoritos={favoritos}
-        />
-      </div>
-      {modalAberto && receitaSelecionada && (
-        <RecipeModal
-          receita={receitaSelecionada}
-          aoFechar={() => setModalAberto(false)}
-        />
-      )}
-    </div>
-  )
+    alignItems: 'center'
+  }
 }

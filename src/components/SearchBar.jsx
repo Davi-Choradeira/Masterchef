@@ -1,55 +1,50 @@
 import React, { useState } from 'react'
 
 export default function SearchBar({ aoBuscar }) {
-  const [ingrediente, setIngrediente] = useState('')
+  const [texto, setTexto] = useState('')
 
-  const handleSearch = () => {
-    if (ingrediente.trim()) {
-      aoBuscar(ingrediente)
-      setIngrediente('')
-    }
-  }
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch()
-    }
+  const buscar = () => {
+    aoBuscar(texto)
   }
 
   return (
-    <div style={styles.container}>
+    <div style={styles.wrapper}>
       <input
         type="text"
-        placeholder="Digite um ingrediente..."
-        value={ingrediente}
-        onChange={(e) => setIngrediente(e.target.value)}
-        onKeyDown={handleKeyDown}
+        placeholder="Buscar ingrediente..."
+        value={texto}
+        onChange={(e) => setTexto(e.target.value)}
         style={styles.input}
       />
-      <button onClick={handleSearch} style={styles.button}>
-        Buscar
-      </button>
+      <button onClick={buscar} style={styles.button}>Buscar</button>
     </div>
   )
 }
 
 const styles = {
-  container: {
+  wrapper: {
     display: 'flex',
     gap: '0.5rem',
-    padding: '1rem'
+    marginTop: '1rem',
+    marginBottom: '1rem'
   },
   input: {
     flex: 1,
-    padding: '0.5rem',
-    fontSize: '1rem'
+    padding: '0.6rem 1rem',
+    border: '1px solid #ccc',
+    borderRadius: '6px',
+    fontSize: '1rem',
+    backgroundColor: '#fff',
+    color: '#333'
   },
   button: {
-    padding: '0.5rem 1rem',
-    backgroundColor: '#f44336',
+    padding: '0.6rem 1.2rem',
+    backgroundColor: '#20232a', // cor do header
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer'
+    borderRadius: '6px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s'
   }
 }
